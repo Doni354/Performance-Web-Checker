@@ -1,8 +1,14 @@
+// Set default ke Desktop dan URL Penuh saat halaman dimuat
+window.onload = function() {
+    selectMainTab('desktop');
+    selectSubTab('full');
+};
+
 document.getElementById("checkPerformance").addEventListener("click", function() {
     const urlInput = document.getElementById("url").value;
 
     // Respon sedang diproses
-    document.getElementById("status").innerHTML = "Sedang memproses keempat kombinasi (Desktop/Mobile dan URL Penuh/Asal)... Mohon tunggu.";
+    document.getElementById("status").innerHTML = "Sedang memproses kombinasi Desktop/Mobile dan URL Penuh/Asal... Mohon tunggu.";
 
     let urlFull, urlOrigin;
     
@@ -22,7 +28,6 @@ document.getElementById("checkPerformance").addEventListener("click", function()
 
     // Proses untuk keempat kombinasi
     checkAllCombinations(urlFull, urlOrigin, function() {
-        // Jika semua data telah selesai diproses, tampilkan hasil
         completedRequests++;
         if (completedRequests === totalRequests) {
             document.getElementById("status").innerHTML = "Semua data berhasil diproses. Pilih tab untuk melihat hasil.";
@@ -30,6 +35,7 @@ document.getElementById("checkPerformance").addEventListener("click", function()
     });
 });
 
+// Proses semua kombinasi
 function checkAllCombinations(urlFull, urlOrigin, onComplete) {
     // Cek desktop untuk URL penuh
     getPageSpeedData(urlFull, 'desktop', 'desktop-full', onComplete);
@@ -44,6 +50,7 @@ function checkAllCombinations(urlFull, urlOrigin, onComplete) {
     getPageSpeedData(urlOrigin, 'mobile', 'mobile-origin', onComplete);
 }
 
+// Ambil data dari API dan tampilkan hasilnya
 function getPageSpeedData(url, strategy, tabId, onComplete) {
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}`;
 
@@ -55,15 +62,16 @@ function getPageSpeedData(url, strategy, tabId, onComplete) {
             } else {
                 displayResults(data, tabId);
             }
-            onComplete(); // Menghitung request yang selesai
+            onComplete();
         })
         .catch(error => {
             console.error("Error fetching PageSpeed data:", error);
             document.getElementById(tabId).innerHTML = "Terjadi kesalahan saat mengambil data.";
-            onComplete(); // Tetap panggil meskipun ada error
+            onComplete();
         });
 }
 
+// Tampilkan hasil
 function displayResults(data, tabId) {
     const fcp = data.lighthouseResult.audits['first-contentful-paint'].displayValue;
     const lcp = data.lighthouseResult.audits['largest-contentful-paint'].displayValue;
@@ -82,20 +90,50 @@ function displayResults(data, tabId) {
     `;
 }
 
-// Fungsi untuk mengubah tab Desktop/Mobile
-function openMainTab(tabName) {
-    const mainTabs = document.getElementsByClassName('tab');
-    for (let i = 0; i < mainTabs.length; i++) {
-        mainTabs[i].classList.remove('active');
+// Fungsi untuk memilih tab utama (Desktop/Mobile)
+function selectMainTab(mode) {
+    const allSubTabs = ['desktop-full', 'desktop-origin', 'mobile-full', 'mobile-origin'];
+    allSubTabs.forEach(tab => document.getElementById(tab).style.display = 'none');
+    
+    const desktopBtn = document.getElementById('desktop-btn');
+    const mobileBtn = document.getElementById('mobile-btn');
+    
+    if (mode === 'desktop') {
+        desktopBtn.style.backgroundColor = '#ccc';
+        mobileBtn.style.backgroundColor = '';
+        document.getElementById('desktop-full').style.display = 'block';
+        document.getElementById('desktop-origin').style.display = 'none';
+    } else {
+        mobileBtn.style.backgroundColor = '#ccc';
+        desktopBtn.style.backgroundColor = '';
+        document.getElementById('mobile-full').style.display = 'block';
+        document.getElementById('mobile-origin').style.display = 'none';
     }
-    document.getElementById(tabName).classList.add('active');
 }
 
-// Fungsi untuk mengubah sub-tab (URL Penuh/Asal)
-function openSubTab(subTabName) {
-    const subTabs = document.getElementsByClassName('sub-tab');
-    for (let i = 0; i < subTabs.length; i++) {
-        subTabs[i].classList.remove('active');
-    }
-    document.getElementById(subTabName).classList.add('active');
+// Fungsi untuk memilih sub-tab (URL Penuh/Asal)
+function selectSubTab(urlType) {
+    const mode = document.getElementById('desktop-btn').style.backgroundColor === '#ccc' ? 'desktop' : 'mobile';
+
+    const allSubTabs = {
+        'desktop': {
+            'full': 'desktop-full',
+            'origin': 'desktop-origin'
+        },
+        'mobile': {
+            'full': 'mobile-full',
+            'origin': 'mobile-origin'
+        }
+    };
+
+    // Aktifkan tab yang sesuai
+    const fullTabId = allSubTabs[mode]['full'];
+    const originTabId = allSubTabs[mode]['origin'];
+
+    document.getElementById(fullTabId).style.display = urlType === 'full' ? 'block' : 'none';
+    document.getElementById(originTabId).style.display = urlType === 'origin' ? 'block' : 'none';
+    
+    // Update tombol URL penuh/asal
+    document.getElementById('full-btn').style.backgroundColor = urlType === 'full' ? '#ccc' : '';
+    document.getElementById('origin-btn').style.backgroundColor = urlType === 'origin' ? '#ccc' : '';
 }

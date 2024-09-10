@@ -5,19 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PageSpeed Checker</title>
     <style>
-        .tab, .sub-tab {
+        .sub-tab {
             display: none;
         }
-        .tab.active, .sub-tab.active {
+        .sub-tab.active {
             display: block;
         }
-        .tabs-menu button {
+        .tabs-container, .sub-tabs-container {
+            display: flex;
+            justify-content: start;
+            margin-bottom: 10px;
+        }
+        .tabs-container button, .sub-tabs-container button {
             padding: 10px;
             margin-right: 5px;
-        }
-        .sub-tabs-menu button {
-            padding: 5px;
-            margin-right: 3px;
         }
     </style>
 </head>
@@ -33,30 +34,22 @@
     <p id="status">Masukkan URL untuk memulai pengecekan.</p>
 
     <!-- Tabs untuk Desktop/Mobile -->
-    <div class="tabs-menu">
-        <button onclick="openMainTab('desktop')">Desktop</button>
-        <button onclick="openMainTab('mobile')">Mobile</button>
+    <div class="tabs-container">
+        <button id="desktop-btn" onclick="selectMainTab('desktop')">Desktop</button>
+        <button id="mobile-btn" onclick="selectMainTab('mobile')">Mobile</button>
     </div>
 
-    <!-- Tabs untuk URL Penuh/Asal dalam Desktop -->
-    <div id="desktop" class="tab">
-        <div class="sub-tabs-menu">
-            <button onclick="openSubTab('desktop-full')">URL Penuh</button>
-            <button onclick="openSubTab('desktop-origin')">URL Asal</button>
-        </div>
-        <div id="desktop-full" class="sub-tab"></div>
-        <div id="desktop-origin" class="sub-tab"></div>
+    <!-- Tabs untuk URL Penuh/Asal -->
+    <div class="sub-tabs-container">
+        <button id="full-btn" onclick="selectSubTab('full')">URL Penuh</button>
+        <button id="origin-btn" onclick="selectSubTab('origin')">URL Asal</button>
     </div>
 
-    <!-- Tabs untuk URL Penuh/Asal dalam Mobile -->
-    <div id="mobile" class="tab">
-        <div class="sub-tabs-menu">
-            <button onclick="openSubTab('mobile-full')">URL Penuh</button>
-            <button onclick="openSubTab('mobile-origin')">URL Asal</button>
-        </div>
-        <div id="mobile-full" class="sub-tab"></div>
-        <div id="mobile-origin" class="sub-tab"></div>
-    </div>
+    <!-- Hasil dari kombinasi Desktop/Mobile dan URL Penuh/Asal -->
+    <div id="desktop-full" class="sub-tab active"></div>
+    <div id="desktop-origin" class="sub-tab"></div>
+    <div id="mobile-full" class="sub-tab"></div>
+    <div id="mobile-origin" class="sub-tab"></div>
 
     <script src="script.js"></script>
 </body>

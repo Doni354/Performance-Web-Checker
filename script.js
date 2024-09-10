@@ -61,20 +61,20 @@ function clearPreviousResults() {
 // Proses semua kombinasi
 function checkAllCombinations(urlFull, urlOrigin, onComplete) {
     // Cek desktop untuk URL penuh
-    getPageSpeedData(urlFull, 'desktop', 'desktop-full', onComplete);
+    getPageSpeedData(urlFull, 'desktop', 'desktop-full', 'Desktop URL Penuh', onComplete);
 
     // Cek desktop untuk URL asal
-    getPageSpeedData(urlOrigin, 'desktop', 'desktop-origin', onComplete);
+    getPageSpeedData(urlOrigin, 'desktop', 'desktop-origin', 'Desktop URL Asal', onComplete);
 
     // Cek mobile untuk URL penuh
-    getPageSpeedData(urlFull, 'mobile', 'mobile-full', onComplete);
+    getPageSpeedData(urlFull, 'mobile', 'mobile-full', 'Mobile URL Penuh', onComplete);
 
     // Cek mobile untuk URL asal
-    getPageSpeedData(urlOrigin, 'mobile', 'mobile-origin', onComplete);
+    getPageSpeedData(urlOrigin, 'mobile', 'mobile-origin', 'Mobile URL Asal', onComplete);
 }
 
 // Ambil data dari API dan tampilkan hasilnya
-function getPageSpeedData(url, strategy, tabId, onComplete) {
+function getPageSpeedData(url, strategy, tabId, title, onComplete) {
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}`;
 
     // Tampilkan status loading di tab yang sedang di-request
@@ -88,7 +88,7 @@ function getPageSpeedData(url, strategy, tabId, onComplete) {
             if (data.error) {
                 document.getElementById(tabId).innerHTML = "Data tidak ditemukan atau terjadi kesalahan.";
             } else {
-                displayResults(data, tabId);
+                displayResults(data, tabId, title);
             }
             onComplete();
         })
@@ -100,7 +100,7 @@ function getPageSpeedData(url, strategy, tabId, onComplete) {
 }
 
 // Tampilkan hasil
-function displayResults(data, tabId) {
+function displayResults(data, tabId, title) {
     const fcp = data.lighthouseResult.audits['first-contentful-paint'].displayValue;
     const lcp = data.lighthouseResult.audits['largest-contentful-paint'].displayValue;
     const cls = data.lighthouseResult.audits['cumulative-layout-shift'].displayValue;
@@ -108,13 +108,22 @@ function displayResults(data, tabId) {
     const tti = data.lighthouseResult.audits['interactive'].displayValue;
     const performanceScore = data.lighthouseResult.categories.performance.score * 100;
 
+    // Ambil waktu saat ini
+    const currentTime = new Date();
+    const formattedTime = `${currentTime.getDate()} ${currentTime.toLocaleString('id-ID', { month: 'short' })} ${currentTime.getFullYear()}, ${currentTime.toLocaleTimeString('id-ID')}`;
+
+    // Format hasil dengan waktu dan judul
     document.getElementById(tabId).innerHTML = `
-        <p>First Contentful Paint (FCP): ${fcp}</p>
-        <p>Largest Contentful Paint (LCP): ${lcp}</p>
-        <p>Cumulative Layout Shift (CLS): ${cls}</p>
-        <p>Total Blocking Time (TBT): ${tbt} ms</p>
-        <p>Time to Interactive (TTI): ${tti}</p>
-        <p>Performance Score: ${performanceScore}/100</p>
+        <div class="result-section">
+            <div class="result-title">${title}</div>
+            <p>First Contentful Paint (FCP): ${fcp}</p>
+            <p>Largest Contentful Paint (LCP): ${lcp}</p>
+            <p>Cumulative Layout Shift (CLS): ${cls}</p>
+            <p>Total Blocking Time (TBT): ${tbt} ms</p>
+            <p>Time to Interactive (TTI): ${tti}</p>
+            <p>Performance Score: ${performanceScore}/100</p>
+            <p class="timestamp">Laporan dari ${formattedTime}</p>
+        </div>
     `;
 }
 

@@ -101,12 +101,42 @@ function getPageSpeedData(url, strategy, tabId, title, onComplete) {
 
 // Tampilkan hasil
 function displayResults(data, tabId, title) {
-    const fcp = data.lighthouseResult.audits['first-contentful-paint'].displayValue;
-    const lcp = data.lighthouseResult.audits['largest-contentful-paint'].displayValue;
-    const cls = data.lighthouseResult.audits['cumulative-layout-shift'].displayValue;
-    const tbt = data.lighthouseResult.audits['total-blocking-time'].displayValue;
+    const fcp = parseFloat(data.lighthouseResult.audits['first-contentful-paint'].displayValue);
+    const lcp = parseFloat(data.lighthouseResult.audits['largest-contentful-paint'].displayValue);
+    const cls = parseFloat(data.lighthouseResult.audits['cumulative-layout-shift'].displayValue);
+    const tbt = parseFloat(data.lighthouseResult.audits['total-blocking-time'].displayValue);
     const tti = data.lighthouseResult.audits['interactive'].displayValue;
     const performanceScore = data.lighthouseResult.categories.performance.score * 100;
+
+    function getPerformanceCategory(value, thresholds) {
+        if (value <= thresholds.low) return 'Baik';
+        if (value <= thresholds.medium) return 'Memerlukan Peningkatan';
+        return 'Buruk';
+    }
+
+    function getColorClass(value, thresholds) {
+        if (value <= thresholds.low) return 'result-good';
+        if (value <= thresholds.medium) return 'result-needs-improvement';
+        return 'result-poor';
+    }
+
+    function formatMetric(value, thresholds, label, description) {
+        const performanceLabel = getPerformanceCategory(value, thresholds);
+        const colorClass = getColorClass(value, thresholds);
+        return `
+            <div class="result-container ${colorClass}">
+                <div class="result-label">${label}: ${value} detik</div>
+                <p class="result-category">${performanceLabel}</p>
+                <p class="result-description">${description}</p>
+            </div>
+        `;
+    }
+
+    // Thresholds untuk masing-masing metrik (dalam detik atau milidetik)
+    const thresholdsLCP = { low: 2.5, medium: 4 }; // Detik
+    const thresholdsFCP = { low: 1.8, medium: 3 }; // Detik
+    const thresholdsCLS = { low: 0.1, medium: 0.25 }; // Skor
+    const thresholdsTBT = { low: 300, medium: 600 }; // Milidetik
 
     // Ambil waktu saat ini
     const currentTime = new Date();
@@ -116,16 +146,19 @@ function displayResults(data, tabId, title) {
     document.getElementById(tabId).innerHTML = `
         <div class="result-section">
             <div class="result-title">${title}</div>
-            <p>First Contentful Paint (FCP): ${fcp}</p>
-            <p>Largest Contentful Paint (LCP): ${lcp}</p>
-            <p>Cumulative Layout Shift (CLS): ${cls}</p>
-            <p>Total Blocking Time (TBT): ${tbt} ms</p>
-            <p>Time to Interactive (TTI): ${tti}</p>
-            <p>Performance Score: ${performanceScore}/100</p>
+            ${formatMetric(lcp, thresholdsLCP, 'Largest Contentful Paint (LCP)', 'Largest Contentful Paint (LCP) mengukur waktu yang dibutuhkan untuk elemen konten terbesar pada halaman dimuat dan terlihat oleh pengguna.')}
+            ${formatMetric(fcp, thresholdsFCP, 'First Contentful Paint (FCP)', 'First Contentful Paint (FCP) mengukur waktu yang dibutuhkan hingga elemen konten pertama kali dirender pada halaman.')}
+            ${formatMetric(cls, thresholdsCLS, 'Cumulative Layout Shift (CLS)', 'Cumulative Layout Shift (CLS) mengukur seberapa sering elemen halaman berpindah posisi saat halaman dimuat, yang dapat memengaruhi pengalaman pengguna.')}
+            ${formatMetric(tbt / 1000, thresholdsTBT, 'Total Blocking Time (TBT)', 'Total Blocking Time (TBT) mengukur total waktu dalam milidetik di mana thread utama terblokir dan tidak dapat merespons input pengguna.')} <!-- Konversi milidetik ke detik -->
+            <div class="result-container ${getColorClass(performanceScore, {low: 90, medium: 50})}">
+                <div class="result-label">Skor Performa: ${performanceScore}/100</div>
+                <p class="result-category">${getPerformanceCategory(performanceScore, {low: 90, medium: 50})}</p>
+            </div>
             <p class="timestamp">Laporan dari ${formattedTime}</p>
         </div>
     `;
 }
+
 
 // Fungsi untuk memilih tab utama (Desktop/Mobile)
 function selectMainTab(mode) {

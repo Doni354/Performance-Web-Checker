@@ -19,6 +19,17 @@
         .tabs-container button, .sub-tabs-container button {
             padding: 10px;
             margin-right: 5px;
+            cursor: pointer;
+        }
+        .tabs-container button.active, .sub-tabs-container button.active {
+            background-color: #ccc;
+        }
+        .loading {
+            font-style: italic;
+            color: gray;
+        }
+        .status-message {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -27,11 +38,11 @@
     
     <!-- Input URL -->
     <label for="url">Masukkan URL:</label>
-    <input type="text" id="url" value="https://www.youtube.com/watch?v=mXHzbtVcoR0&list=RDMMmXHzbtVcoR0&start_radio=1">
+    <input type="text" id="url" value="">
     
     <button id="checkPerformance">Cek Performa</button>
 
-    <p id="status">Masukkan URL untuk memulai pengecekan.</p>
+    <p id="status" class="status-message">Masukkan URL untuk memulai pengecekan.</p>
 
     <!-- Tabs untuk Desktop/Mobile -->
     <div class="tabs-container">

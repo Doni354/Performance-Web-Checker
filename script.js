@@ -1,3 +1,5 @@
+let isProcessing = false;
+
 // Set default ke Desktop dan URL Penuh saat halaman dimuat
 window.onload = function() {
     selectMainTab('desktop');
@@ -5,13 +7,21 @@ window.onload = function() {
 };
 
 document.getElementById("checkPerformance").addEventListener("click", function() {
+    if (isProcessing) return; // Hindari permintaan ganda
+
     const urlInput = document.getElementById("url").value;
 
-    // Respon sedang diproses
+    // Cek apakah URL kosong
+    if (!urlInput) {
+        document.getElementById("status").innerHTML = "URL belum diisi. Masukkan URL yang valid.";
+        return;
+    }
+
+    isProcessing = true; // Tandai proses sedang berlangsung
     document.getElementById("status").innerHTML = "Sedang memproses kombinasi Desktop/Mobile dan URL Penuh/Asal... Mohon tunggu.";
 
     let urlFull, urlOrigin;
-    
+
     // Validasi dan parsing URL
     try {
         const parsedUrl = new URL(urlInput);
@@ -19,6 +29,7 @@ document.getElementById("checkPerformance").addEventListener("click", function()
         urlOrigin = parsedUrl.origin;
     } catch (error) {
         document.getElementById("status").innerHTML = "URL yang Anda masukkan tidak valid.";
+        isProcessing = false;
         return;
     }
 
@@ -26,14 +37,26 @@ document.getElementById("checkPerformance").addEventListener("click", function()
     let completedRequests = 0;
     const totalRequests = 4;
 
+    // Reset data sebelum memulai pengecekan ulang
+    clearPreviousResults();
+
     // Proses untuk keempat kombinasi
     checkAllCombinations(urlFull, urlOrigin, function() {
         completedRequests++;
         if (completedRequests === totalRequests) {
             document.getElementById("status").innerHTML = "Semua data berhasil diproses. Pilih tab untuk melihat hasil.";
+            isProcessing = false; // Tandai proses selesai
         }
     });
 });
+
+// Reset hasil sebelum memulai request baru
+function clearPreviousResults() {
+    document.getElementById("desktop-full").innerHTML = "";
+    document.getElementById("desktop-origin").innerHTML = "";
+    document.getElementById("mobile-full").innerHTML = "";
+    document.getElementById("mobile-origin").innerHTML = "";
+}
 
 // Proses semua kombinasi
 function checkAllCombinations(urlFull, urlOrigin, onComplete) {
@@ -53,6 +76,11 @@ function checkAllCombinations(urlFull, urlOrigin, onComplete) {
 // Ambil data dari API dan tampilkan hasilnya
 function getPageSpeedData(url, strategy, tabId, onComplete) {
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}`;
+
+    // Tampilkan status loading di tab yang sedang di-request
+    if (document.getElementById(tabId).innerHTML === "") {
+        document.getElementById(tabId).innerHTML = `<p class="loading">Sedang memproses ${strategy.toUpperCase()} - ${tabId.includes('full') ? 'URL Penuh' : 'URL Asal'}...</p>`;
+    }
 
     fetch(apiUrl)
         .then(response => response.json())
@@ -99,21 +127,21 @@ function selectMainTab(mode) {
     const mobileBtn = document.getElementById('mobile-btn');
     
     if (mode === 'desktop') {
-        desktopBtn.style.backgroundColor = '#ccc';
-        mobileBtn.style.backgroundColor = '';
+        desktopBtn.classList.add('active');
+        mobileBtn.classList.remove('active');
         document.getElementById('desktop-full').style.display = 'block';
-        document.getElementById('desktop-origin').style.display = 'none';
+        document.getElementById('desktop-origin').style.display = 'block';
     } else {
-        mobileBtn.style.backgroundColor = '#ccc';
-        desktopBtn.style.backgroundColor = '';
+        mobileBtn.classList.add('active');
+        desktopBtn.classList.remove('active');
         document.getElementById('mobile-full').style.display = 'block';
-        document.getElementById('mobile-origin').style.display = 'none';
+        document.getElementById('mobile-origin').style.display = 'block';
     }
 }
 
 // Fungsi untuk memilih sub-tab (URL Penuh/Asal)
 function selectSubTab(urlType) {
-    const mode = document.getElementById('desktop-btn').style.backgroundColor === '#ccc' ? 'desktop' : 'mobile';
+    const mode = document.getElementById('desktop-btn').classList.contains('active') ? 'desktop' : 'mobile';
 
     const allSubTabs = {
         'desktop': {
@@ -126,14 +154,10 @@ function selectSubTab(urlType) {
         }
     };
 
-    // Aktifkan tab yang sesuai
-    const fullTabId = allSubTabs[mode]['full'];
-    const originTabId = allSubTabs[mode]['origin'];
+    // Sembunyikan semua tab
+    Object.values(allSubTabs[mode]).forEach(tab => document.getElementById(tab).style.display = 'none');
 
-    document.getElementById(fullTabId).style.display = urlType === 'full' ? 'block' : 'none';
-    document.getElementById(originTabId).style.display = urlType === 'origin' ? 'block' : 'none';
-    
-    // Update tombol URL penuh/asal
-    document.getElementById('full-btn').style.backgroundColor = urlType === 'full' ? '#ccc' : '';
-    document.getElementById('origin-btn').style.backgroundColor = urlType === 'origin' ? '#ccc' : '';
+    // Tampilkan tab yang dipilih
+    const tabToShow = allSubTabs[mode][urlType];
+    document.getElementById(tabToShow).style.display = 'block';
 }

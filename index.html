@@ -3,7 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PageSpeed Insights</title>
+    <title>PageSpeed Checker</title>
+    <style>
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+        .tabs-menu button {
+            padding: 10px;
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
     <h1>PageSpeed Checker</h1>
@@ -11,28 +23,22 @@
     <!-- Input URL -->
     <label for="url">Masukkan URL:</label>
     <input type="text" id="url" value="https://www.youtube.com/watch?v=mXHzbtVcoR0&list=RDMMmXHzbtVcoR0&start_radio=1">
-
-    <!-- Pilihan untuk URL asal atau URL input -->
-    <div>
-        <input type="radio" id="useOriginal" name="urlOption" checked>
-        <label for="useOriginal">URL Asal (hanya domain)</label>
-
-        <input type="radio" id="useFull" name="urlOption">
-        <label for="useFull">URL Input (URL lengkap)</label>
-    </div>
-
-    <!-- Pilihan mode desktop atau mobile -->
-    <div>
-        <input type="radio" id="desktop" name="strategy" checked>
-        <label for="desktop">Desktop</label>
-
-        <input type="radio" id="mobile" name="strategy">
-        <label for="mobile">Mobile</label>
-    </div>
-
+    
     <button id="checkPerformance">Cek Performa</button>
 
-    <div id="result"></div>
+    <p id="status">Masukkan URL untuk memulai pengecekan.</p>
+
+    <div class="tabs-menu">
+        <button onclick="openTab('desktop-full')">Desktop (URL Penuh)</button>
+        <button onclick="openTab('desktop-origin')">Desktop (URL Asal)</button>
+        <button onclick="openTab('mobile-full')">Mobile (URL Penuh)</button>
+        <button onclick="openTab('mobile-origin')">Mobile (URL Asal)</button>
+    </div>
+
+    <div id="desktop-full" class="tab"></div>
+    <div id="desktop-origin" class="tab"></div>
+    <div id="mobile-full" class="tab"></div>
+    <div id="mobile-origin" class="tab"></div>
 
     <script src="script.js"></script>
 </body>

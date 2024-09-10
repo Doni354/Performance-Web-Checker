@@ -5,15 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PageSpeed Checker</title>
     <style>
-        .tab {
+        .tab, .sub-tab {
             display: none;
         }
-        .tab.active {
+        .tab.active, .sub-tab.active {
             display: block;
         }
         .tabs-menu button {
             padding: 10px;
             margin-right: 5px;
+        }
+        .sub-tabs-menu button {
+            padding: 5px;
+            margin-right: 3px;
         }
     </style>
 </head>
@@ -28,17 +32,31 @@
 
     <p id="status">Masukkan URL untuk memulai pengecekan.</p>
 
+    <!-- Tabs untuk Desktop/Mobile -->
     <div class="tabs-menu">
-        <button onclick="openTab('desktop-full')">Desktop (URL Penuh)</button>
-        <button onclick="openTab('desktop-origin')">Desktop (URL Asal)</button>
-        <button onclick="openTab('mobile-full')">Mobile (URL Penuh)</button>
-        <button onclick="openTab('mobile-origin')">Mobile (URL Asal)</button>
+        <button onclick="openMainTab('desktop')">Desktop</button>
+        <button onclick="openMainTab('mobile')">Mobile</button>
     </div>
 
-    <div id="desktop-full" class="tab"></div>
-    <div id="desktop-origin" class="tab"></div>
-    <div id="mobile-full" class="tab"></div>
-    <div id="mobile-origin" class="tab"></div>
+    <!-- Tabs untuk URL Penuh/Asal dalam Desktop -->
+    <div id="desktop" class="tab">
+        <div class="sub-tabs-menu">
+            <button onclick="openSubTab('desktop-full')">URL Penuh</button>
+            <button onclick="openSubTab('desktop-origin')">URL Asal</button>
+        </div>
+        <div id="desktop-full" class="sub-tab"></div>
+        <div id="desktop-origin" class="sub-tab"></div>
+    </div>
+
+    <!-- Tabs untuk URL Penuh/Asal dalam Mobile -->
+    <div id="mobile" class="tab">
+        <div class="sub-tabs-menu">
+            <button onclick="openSubTab('mobile-full')">URL Penuh</button>
+            <button onclick="openSubTab('mobile-origin')">URL Asal</button>
+        </div>
+        <div id="mobile-full" class="sub-tab"></div>
+        <div id="mobile-origin" class="sub-tab"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

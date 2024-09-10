@@ -2,7 +2,7 @@ document.getElementById("checkPerformance").addEventListener("click", function()
     const urlInput = document.getElementById("url").value;
 
     // Respon sedang diproses
-    document.getElementById("status").innerHTML = "Sedang memproses... Mohon tunggu.";
+    document.getElementById("status").innerHTML = "Sedang memproses keempat kombinasi (Desktop/Mobile dan URL Penuh/Asal)... Mohon tunggu.";
 
     let urlFull, urlOrigin;
     
@@ -16,25 +16,35 @@ document.getElementById("checkPerformance").addEventListener("click", function()
         return;
     }
 
-    // Memproses untuk semua kombinasi: Desktop & Mobile, URL Penuh & Asal
-    checkAllCombinations(urlFull, urlOrigin);
+    // Menyimpan status progres
+    let completedRequests = 0;
+    const totalRequests = 4;
+
+    // Proses untuk keempat kombinasi
+    checkAllCombinations(urlFull, urlOrigin, function() {
+        // Jika semua data telah selesai diproses, tampilkan hasil
+        completedRequests++;
+        if (completedRequests === totalRequests) {
+            document.getElementById("status").innerHTML = "Semua data berhasil diproses. Pilih tab untuk melihat hasil.";
+        }
+    });
 });
 
-function checkAllCombinations(urlFull, urlOrigin) {
+function checkAllCombinations(urlFull, urlOrigin, onComplete) {
     // Cek desktop untuk URL penuh
-    getPageSpeedData(urlFull, 'desktop', 'desktop-full');
+    getPageSpeedData(urlFull, 'desktop', 'desktop-full', onComplete);
 
     // Cek desktop untuk URL asal
-    getPageSpeedData(urlOrigin, 'desktop', 'desktop-origin');
+    getPageSpeedData(urlOrigin, 'desktop', 'desktop-origin', onComplete);
 
     // Cek mobile untuk URL penuh
-    getPageSpeedData(urlFull, 'mobile', 'mobile-full');
+    getPageSpeedData(urlFull, 'mobile', 'mobile-full', onComplete);
 
     // Cek mobile untuk URL asal
-    getPageSpeedData(urlOrigin, 'mobile', 'mobile-origin');
+    getPageSpeedData(urlOrigin, 'mobile', 'mobile-origin', onComplete);
 }
 
-function getPageSpeedData(url, strategy, tabId) {
+function getPageSpeedData(url, strategy, tabId, onComplete) {
     const apiUrl = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=${strategy}`;
 
     fetch(apiUrl)
@@ -45,11 +55,12 @@ function getPageSpeedData(url, strategy, tabId) {
             } else {
                 displayResults(data, tabId);
             }
-            document.getElementById("status").innerHTML = "Pengecekan selesai. Pilih tab untuk melihat hasil.";
+            onComplete(); // Menghitung request yang selesai
         })
         .catch(error => {
             console.error("Error fetching PageSpeed data:", error);
             document.getElementById(tabId).innerHTML = "Terjadi kesalahan saat mengambil data.";
+            onComplete(); // Tetap panggil meskipun ada error
         });
 }
 
@@ -71,14 +82,20 @@ function displayResults(data, tabId) {
     `;
 }
 
-// Fungsi untuk mengubah tab
-function openTab(tabName) {
-    // Sembunyikan semua tab
-    const tabs = document.getElementsByClassName('tab');
-    for (let i = 0; i < tabs.length; i++) {
-        tabs[i].classList.remove('active');
+// Fungsi untuk mengubah tab Desktop/Mobile
+function openMainTab(tabName) {
+    const mainTabs = document.getElementsByClassName('tab');
+    for (let i = 0; i < mainTabs.length; i++) {
+        mainTabs[i].classList.remove('active');
     }
-
-    // Tampilkan tab yang dipilih
     document.getElementById(tabName).classList.add('active');
+}
+
+// Fungsi untuk mengubah sub-tab (URL Penuh/Asal)
+function openSubTab(subTabName) {
+    const subTabs = document.getElementsByClassName('sub-tab');
+    for (let i = 0; i < subTabs.length; i++) {
+        subTabs[i].classList.remove('active');
+    }
+    document.getElementById(subTabName).classList.add('active');
 }

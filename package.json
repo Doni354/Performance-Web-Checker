@@ -1,0 +1,11 @@
+{
+  "name": "performance-web-checker",
+  "version": "1.0.0",
+  "description": "Performance Web Checker using PageSpeed Insight Api",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

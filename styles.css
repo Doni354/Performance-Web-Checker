@@ -1,0 +1,132 @@
+/* styles.css */
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    color: #444;
+}
+
+label {
+    display: block;
+    margin: 0 auto 10px;
+    text-align: center;
+}
+
+input[type="text"] {
+    width: 80%;
+    max-width: 600px;
+    padding: 10px;
+    margin: 0 auto;
+    display: block;
+}
+
+button {
+    background-color: #0056b3;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+button:hover {
+    background-color: #004494;
+}
+
+.tabs-container, .sub-tabs-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.tabs-container button, .sub-tabs-container button {
+    padding: 10px;
+    margin: 0 5px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.tabs-container button.active, .sub-tabs-container button.active {
+    background-color: #ccc;
+}
+
+.results-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.sub-tab {
+    display: none;
+}
+
+.sub-tab.active {
+    display: block;
+}
+
+.result-section {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.result-title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.result-container {
+    margin-bottom: 15px;
+}
+
+.result-label {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.result-description {
+    margin-top: 5px;
+    font-size: 14px;
+    color: #666;
+}
+
+.result-category {
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.result-good {
+    color: green;
+}
+
+.result-needs-improvement {
+    color: orange;
+}
+
+.result-poor {
+    color: red;
+}
+
+.timestamp {
+    font-size: 0.9em;
+    color: #888;
+    text-align: center;
+}

@@ -4,120 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PageSpeed Checker</title>
-    <style>
-        .sub-tab {
-            display: none;
-        }
-        .sub-tab.active {
-            display: block;
-        }
-        .tabs-container, .sub-tabs-container {
-            display: flex;
-            justify-content: start;
-            margin-bottom: 10px;
-        }
-        .tabs-container button, .sub-tabs-container button {
-            padding: 10px;
-            margin-right: 5px;
-            cursor: pointer;
-        }
-        .tabs-container button.active, .sub-tabs-container button.active {
-            background-color: #ccc;
-        }
-        .loading {
-            font-style: italic;
-            color: gray;
-        }
-        .status-message {
-            margin-top: 10px;
-        }
-
-
-
-
-        .result-section {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    margin-bottom: 20px;
-    background-color: #f9f9f9;
-}
-
-.result-title {
-    font-size: 1.2em;
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.result-section p {
-    margin: 5px 0;
-}
-
-
-
-.timestamp {
-    font-size: 0.9em;
-    color: #555;
-}
-
-.loading {
-    font-style: italic;
-    color: #666;
-}
-
-/* CSS untuk kategori performa */
-.result-section {
-    margin-bottom: 20px;
-}
-
-.result-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-}
-
-.result-container {
-    margin-bottom: 10px;
-}
-
-.result-label {
-    font-size: 16px;
-    font-weight: bold;
-}
-
-.result-description {
-    margin-top: 5px;
-    font-size: 14px;
-    color: #333;
-}
-
-.result-category {
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.result-good {
-    color: green;
-}
-
-.result-needs-improvement {
-    color: orange;
-}
-
-.result-poor {
-    color: red;
-}
-
-
-
-
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>PageSpeed Checker</h1>
     
     <!-- Input URL -->
     <label for="url">Masukkan URL:</label>
-    <input type="text" id="url" value="">
+    <input type="text" id="url" placeholder="Masukkan URL...">
     
     <button id="checkPerformance">Cek Performa</button>
 
@@ -136,10 +30,12 @@
     </div>
 
     <!-- Hasil dari kombinasi Desktop/Mobile dan URL Penuh/Asal -->
-    <div id="desktop-full" class="sub-tab active"></div>
-    <div id="desktop-origin" class="sub-tab"></div>
-    <div id="mobile-full" class="sub-tab"></div>
-    <div id="mobile-origin" class="sub-tab"></div>
+    <div id="results-container" class="results-container">
+        <div id="desktop-full" class="sub-tab active"></div>
+        <div id="desktop-origin" class="sub-tab"></div>
+        <div id="mobile-full" class="sub-tab"></div>
+        <div id="mobile-origin" class="sub-tab"></div>
+    </div>
 
     <script src="script.js"></script>
 </body>

@@ -7,34 +7,48 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>PageSpeed Checker</h1>
-    
-    <!-- Input URL -->
-    <label for="url">Masukkan URL:</label>
-    <input type="text" id="url" placeholder="Masukkan URL...">
-    
-    <button id="checkPerformance">Cek Performa</button>
+    <div class="container">
+        <h1>PageSpeed Checker</h1>
+        
+        <div class="input-section">
+            <div class="input-group">
+                <input type="text" id="url" placeholder="Masukkan URL">
+                <button id="checkPerformance">Analisis</button>
+            </div>
+            <p id="status" class="status-message">Masukkan URL untuk memulai pengecekan.</p>
+        </div>
 
-    <p id="status" class="status-message">Masukkan URL untuk memulai pengecekan.</p>
+        <!-- Tabs untuk Desktop/Mobile -->
+        <div class="tabs-container">
+            <button id="desktop-btn" onclick="selectMainTab('desktop')">Desktop</button>
+            <button id="mobile-btn" onclick="selectMainTab('mobile')">Mobile</button>
+        </div>
 
-    <!-- Tabs untuk Desktop/Mobile -->
-    <div class="tabs-container">
-        <button id="desktop-btn" onclick="selectMainTab('desktop')">Desktop</button>
-        <button id="mobile-btn" onclick="selectMainTab('mobile')">Mobile</button>
-    </div>
+        <!-- Tabs untuk URL Penuh/Asal -->
+        <div class="sub-tabs-container">
+            <button id="full-btn" onclick="selectSubTab('full')">URL Penuh</button>
+            <button id="origin-btn" onclick="selectSubTab('origin')">URL Asal</button>
+        </div>
 
-    <!-- Tabs untuk URL Penuh/Asal -->
-    <div class="sub-tabs-container">
-        <button id="full-btn" onclick="selectSubTab('full')">URL Penuh</button>
-        <button id="origin-btn" onclick="selectSubTab('origin')">URL Asal</button>
-    </div>
-
-    <!-- Hasil dari kombinasi Desktop/Mobile dan URL Penuh/Asal -->
-    <div id="results-container" class="results-container">
-        <div id="desktop-full" class="sub-tab active"></div>
-        <div id="desktop-origin" class="sub-tab"></div>
-        <div id="mobile-full" class="sub-tab"></div>
-        <div id="mobile-origin" class="sub-tab"></div>
+        <!-- Hasil dari kombinasi Desktop/Mobile dan URL Penuh/Asal -->
+        <div class="comparison-container">
+            <div id="desktop-full" class="result-section">
+                <div class="comparison-title">Desktop - URL Penuh</div>
+                <div class="comparison-content" id="desktop-full-content"></div>
+            </div>
+            <div id="desktop-origin" class="result-section">
+                <div class="comparison-title">Desktop - URL Asal</div>
+                <div class="comparison-content" id="desktop-origin-content"></div>
+            </div>
+            <div id="mobile-full" class="result-section">
+                <div class="comparison-title">Mobile - URL Penuh</div>
+                <div class="comparison-content" id="mobile-full-content"></div>
+            </div>
+            <div id="mobile-origin" class="result-section">
+                <div class="comparison-title">Mobile - URL Asal</div>
+                <div class="comparison-content" id="mobile-origin-content"></div>
+            </div>
+        </div>
     </div>
 
     <script src="script.js"></script>
